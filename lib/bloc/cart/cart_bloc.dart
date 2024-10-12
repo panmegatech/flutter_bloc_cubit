@@ -19,7 +19,7 @@ class CartBloc extends Bloc<CartEvent, CartState> {
     on<ClearCartEvent>(_handleClearCartEvent);
   }
 
-  Future<FutureOr<void>> _handleMockCartEvent(
+  Future<void> _handleMockCartEvent(
       MockCartEvent event, Emitter<CartState> emit) async {
     //todo loading. .
     emit(state.copyWith(isLoading: true));
