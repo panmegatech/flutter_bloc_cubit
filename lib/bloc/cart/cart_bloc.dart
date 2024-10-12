@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_bloc_cubit/model/cart/cart_item.dart';
+import 'package:flutter_bloc_cubit/utils/utils.dart';
 
 part 'cart_event.dart';
 part 'cart_state.dart';
@@ -12,31 +13,24 @@ class CartBloc extends Bloc<CartEvent, CartState> {
       : super(
           const CartState(cartItem: [], totalPrice: 0, isLoading: false),
         ) {
-    on<ShowCartEvent>(_handleShowCartEvent);
-    on<AddCartEvent>((event, emit) {
-      //todo Add cart
-    });
-    on<RemoveCartEvent>((event, emit) {
-      //todo Remove cart by id
-    });
-    on<ClearCartEvent>((event, emit) {
-      //todo clear or reset cart
-    });
+    on<MockCartEvent>(_handleMockCartEvent);
+    on<AddCartEvent>(_handleAddCartEvent);
+    on<RemoveCartEvent>(_handleRemoveCartEvent);
+    on<ClearCartEvent>(_handleClearCartEvent);
   }
 
-  Future<FutureOr<void>> _handleShowCartEvent(
-      ShowCartEvent event, Emitter<CartState> emit) async {
+  Future<FutureOr<void>> _handleMockCartEvent(
+      MockCartEvent event, Emitter<CartState> emit) async {
     //todo loading. .
     emit(state.copyWith(isLoading: true));
     await Future.delayed(const Duration(milliseconds: 400));
 
     //todo logic something
 
-    const List<CartItem> cartItem = [
-      CartItem(name: "apple", price: 20, quantity: 1),
-      CartItem(name: "banana", price: 30, quantity: 2),
-      CartItem(name: "carrot", price: 40, quantity: 3),
-    ];
+    List<CartItem> cartItem = List.generate(
+      10,
+      (index) => randomCartItem(),
+    ).toSet().toList();
 
     emit(state.copyWith(
       cartItem: cartItem,
@@ -54,5 +48,55 @@ class CartBloc extends Bloc<CartEvent, CartState> {
         return previousValue + (element.price * element.quantity);
       },
     );
+  }
+
+  Future<void> _handleAddCartEvent(
+      AddCartEvent event, Emitter<CartState> emit) async {
+    //todo loading. .
+    emit(state.copyWith(isLoading: true));
+    await Future.delayed(const Duration(milliseconds: 400));
+
+    //todo logic something
+
+    List<CartItem> newCartItemList = [
+      ...state.cartItem,
+      event.cartItem,
+    ];
+
+    emit(state.copyWith(
+      cartItem: newCartItemList,
+      isLoading: false,
+      totalPrice: _totalPrice(
+        cartItem: newCartItemList,
+      ),
+    ));
+  }
+
+  FutureOr<void> _handleClearCartEvent(
+      ClearCartEvent event, Emitter<CartState> emit) {
+    emit(const CartState(totalPrice: 0, isLoading: false, cartItem: []));
+  }
+
+  FutureOr<void> _handleRemoveCartEvent(
+      RemoveCartEvent event, Emitter<CartState> emit) async {
+    //todo loading. .
+    emit(state.copyWith(isLoading: true));
+    await Future.delayed(const Duration(milliseconds: 400));
+
+    //todo logic something
+
+    List<CartItem> newCartItemList = state.cartItem
+        .where(
+          (element) => element.id != event.id,
+        )
+        .toList();
+
+    emit(state.copyWith(
+      cartItem: newCartItemList,
+      isLoading: false,
+      totalPrice: _totalPrice(
+        cartItem: newCartItemList,
+      ),
+    ));
   }
 }

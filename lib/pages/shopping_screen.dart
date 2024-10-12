@@ -3,6 +3,7 @@ import 'dart:developer';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_bloc_cubit/bloc/cart/cart_bloc.dart';
+import 'package:flutter_bloc_cubit/utils/utils.dart';
 import 'package:flutter_bloc_cubit/widgets/custom_floating_action_button.dart';
 import 'package:flutter_bloc_cubit/widgets/custom_scaffold.dart';
 import 'package:flutter_bloc_cubit/widgets/custom_text.dart';
@@ -16,10 +17,10 @@ class ShoppingScreen extends StatelessWidget {
       title: "ShoppingScreen",
       customFloatingActionButton: [
         CustomFloatingActionButton(
-          name: "show",
+          name: "mock",
           onPressed: () {
-            log("show");
-            context.read<CartBloc>().add(ShowCartEvent());
+            log("mock");
+            context.read<CartBloc>().add(MockCartEvent());
           },
         ),
         CustomFloatingActionButton(
@@ -28,13 +29,17 @@ class ShoppingScreen extends StatelessWidget {
             log("add cart");
 
             log("add cart");
-            context.read<CartBloc>().add(AddCartEvent());
+            context.read<CartBloc>().add(AddCartEvent(
+                  cartItem: randomCartItem(),
+                ));
           },
         ),
         CustomFloatingActionButton(
           name: "Clear",
           onPressed: () {
             log("clear!");
+
+            context.read<CartBloc>().add(ClearCartEvent());
           },
         ),
       ],
@@ -49,6 +54,10 @@ class ShoppingScreen extends StatelessWidget {
               return const CircularProgressIndicator();
             }
 
+            if (state.cartItem.isEmpty) {
+              return const CustomText("Your cart is empty.");
+            }
+
             return Expanded(
               child: Column(
                 children: [
@@ -57,9 +66,6 @@ class ShoppingScreen extends StatelessWidget {
                     child: ListView.builder(
                       itemCount: state.cartItem.length,
                       itemBuilder: (context, index) {
-                        if (state.cartItem.isEmpty) {
-                          return const CustomText("Your cart is empty.");
-                        }
                         return ListTile(
                           title: CustomText(state.cartItem[index].name),
                           subtitle: Text(
@@ -67,7 +73,8 @@ class ShoppingScreen extends StatelessWidget {
                           trailing: IconButton(
                               onPressed: () {
                                 log("remove cart");
-                                context.read<CartBloc>().add(RemoveCartEvent());
+                                context.read<CartBloc>().add(RemoveCartEvent(
+                                    id: state.cartItem[index].id));
                               },
                               icon: const Icon(Icons.remove_shopping_cart)),
                         );
@@ -77,7 +84,7 @@ class ShoppingScreen extends StatelessWidget {
                   Expanded(
                     flex: 2,
                     child: CustomText(
-                      'totalPrice: ${state.totalPrice}',
+                      'Total \$${state.totalPrice}',
                       color: Colors.red,
                     ),
                   ),
