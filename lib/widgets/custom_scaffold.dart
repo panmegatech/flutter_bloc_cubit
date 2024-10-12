@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc_cubit/route_name.dart';
 import 'package:flutter_bloc_cubit/widgets/custom_floating_action_button.dart';
 import 'package:flutter_bloc_cubit/widgets/custom_text.dart';
 
@@ -20,6 +21,16 @@ class CustomScaffold extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         title: CustomText(title),
+        actions: [
+          IconButton(
+              onPressed: () {
+                Navigator.pushNamed(context, RouteName.shopping);
+              },
+              icon: const Icon(
+                Icons.shopping_cart,
+                color: Colors.red,
+              ))
+        ],
       ),
       body: Center(
         child: Padding(

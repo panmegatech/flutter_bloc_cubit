@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_bloc_cubit/bloc/advanced/advanced_bloc.dart';
 import 'package:flutter_bloc_cubit/bloc/basic/counter_cubit.dart';
+import 'package:flutter_bloc_cubit/bloc/cart/cart_bloc.dart';
 import 'package:flutter_bloc_cubit/bloc/simple/simple_cubit.dart';
 import 'package:flutter_bloc_cubit/bloc/standard/standard_cubit.dart';
 
@@ -19,6 +20,7 @@ void main() {
     BlocProvider(create: (context) => CounterCubit()),
     BlocProvider(create: (context) => SimpleCubit()),
     BlocProvider(create: (context) => StandardCubit()),
+    BlocProvider(create: (context) => CartBloc()),
   ], child: const MainApp()));
 }
 
