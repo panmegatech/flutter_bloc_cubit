@@ -67,7 +67,7 @@ To get started with this repository, ensure you have Flutter installed and set u
 
 1. Clone the repository:
    ```bash
-   git clone https://github.com/panmegatech/flutter_cubit_bloc.git
+   git clone https://github.com/panmegatech/flutter_bloc_cubit.git
    ```
 2. Install dependencies:
    ```bash
